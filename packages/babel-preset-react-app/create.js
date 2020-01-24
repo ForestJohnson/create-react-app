@@ -54,6 +54,12 @@ module.exports = function(api, opts, env) {
     );
   }
 
+  var styledComponentsPluginExists = false;
+  try {
+    require.resolve('babel-plugin-styled-components')
+    styledComponentsPluginExists = true;
+  } catch (_) {}
+
   if (!isEnvDevelopment && !isEnvProduction && !isEnvTest) {
     throw new Error(
       'Using `babel-preset-react-app` requires that you specify `NODE_ENV` or ' +
@@ -104,6 +110,12 @@ module.exports = function(api, opts, env) {
       isTypeScriptEnabled && [require('@babel/preset-typescript').default],
     ].filter(Boolean),
     plugins: [
+      styledComponentsPluginExists && [
+        "babel-plugin-styled-components",
+        {
+          "displayName": !isEnvProduction
+        }
+      ],
       // Strip flow types before any other transform, emulating the behavior
       // order as-if the browser supported all of the succeeding features
       // https://github.com/facebook/create-react-app/pull/5182
